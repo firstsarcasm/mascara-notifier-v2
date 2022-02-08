@@ -11,10 +11,12 @@ import java.util.List;
 @Component
 public class KeyboardMaker {
 
+	//todo to separate class or enum?
 	public static final String SCHEDULE_BUTTON_TITLE = "Расписание";
 	public static final String SUBSCRIBE_BUTTON_TITLE = "Подписаться";
 	public static final String UNSUBSCRIBE_BUTTON_TITLE = "Отписаться";
 	public static final String WORKING_DAYS_BUTTON_TITLE = "Рабочие дни";
+
 	private static final String HEADER_TEXT = "------------------";
 
 	private final SendMessage.SendMessageBuilder keyboardMessage = SendMessage.builder()

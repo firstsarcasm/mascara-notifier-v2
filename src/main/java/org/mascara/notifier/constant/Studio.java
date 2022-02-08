@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum Branch {
+public enum Studio {
 	UZHNAYA("Южная", 617387)
 	;
 
-	private final String branchName;
+	private final String name;
 	private final Integer code;
 }

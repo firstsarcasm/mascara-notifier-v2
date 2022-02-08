@@ -12,7 +12,7 @@ import java.time.ZoneId;
 public class TimeUtils {
 
 	public static LocalDate getToday() {
-		val clock = Clock.system(ZoneId.of("Europe/Moscow"));
+		var clock = Clock.system(ZoneId.of("Europe/Moscow"));
 		return LocalDate.now(clock);
 	}
 

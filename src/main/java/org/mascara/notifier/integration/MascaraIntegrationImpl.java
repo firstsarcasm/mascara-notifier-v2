@@ -1,7 +1,6 @@
 package org.mascara.notifier.integration;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.mascara.notifier.mapping.AvailableBookingTimeMapper;
 import org.mascara.notifier.model.TimePeriod;
 import org.mascara.notifier.model.days.response.BookDatesResponse;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.mascara.notifier.constant.Branch.UZHNAYA;
+import static org.mascara.notifier.constant.Studio.UZHNAYA;
 import static org.mascara.notifier.constant.WorkTime.END_OF_WORK;
 import static org.mascara.notifier.constant.WorkTime.START_OF_WORK;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -113,7 +112,7 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 
 	private void fillInWithRecords(List<TimePeriod> possibleServiceTimePeriods, List<TimePeriod> result) {
 		for (int i = 0; i < possibleServiceTimePeriods.size(); i++) {
-			val startOfOrder = possibleServiceTimePeriods.get(i).getEndTime();
+			var startOfOrder = possibleServiceTimePeriods.get(i).getEndTime();
 			if (startOfOrder == END_OF_WORK) {
 				break;
 			}
@@ -122,7 +121,7 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 				break;
 			}
 
-			val endOfOrder = possibleServiceTimePeriods.get(i + 1).getStarTime();
+			var endOfOrder = possibleServiceTimePeriods.get(i + 1).getStarTime();
 			if (startOfOrder.isBefore(endOfOrder)) {
 				result.add(new TimePeriod(startOfOrder, endOfOrder));
 			}

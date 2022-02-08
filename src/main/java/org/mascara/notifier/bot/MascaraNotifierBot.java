@@ -44,8 +44,7 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 	}
 
 	//todo unit tests
-	//todo if caching work
-//todo сделать разные подключения к базе в зависимости от профиля(heroku,dev,etc)
+	//todo check if caching work
 	//todo add integration retries ?
 	//todo logs
 	//todo добавить на начальном экране выбор салона и сотрудника

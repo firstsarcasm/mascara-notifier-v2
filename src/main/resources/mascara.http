@@ -20,7 +20,6 @@ authorization:{{auth-token}}
 GET https://n652960.yclients.com/api/v1/book_times/{{studio-id}}/{{staff-id}}/2022-02-05
 authorization:{{auth-token}}
 
-
 ###
 GET https://n652960.yclients.com/api/v1/book_times/{{studio-id}}/1789963/2022-02-04
 authorization:{{auth-token}}

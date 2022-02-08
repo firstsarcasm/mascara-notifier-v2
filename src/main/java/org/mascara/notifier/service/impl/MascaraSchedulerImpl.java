@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mascara.notifier.bot.MessageSender;
 import org.mascara.notifier.constant.RelativeDay;
 import org.mascara.notifier.entity.Schedule;
+import org.mascara.notifier.entity.Subscriber;
 import org.mascara.notifier.repository.ScheduleRepository;
 import org.mascara.notifier.repository.SubscribersRepository;
 import org.mascara.notifier.service.MascaraScheduler;
@@ -14,12 +15,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -29,68 +27,60 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @RequiredArgsConstructor
 public class MascaraSchedulerImpl implements MascaraScheduler {
 
-	private static final String DAY_DESCRIPTION_DELIMITER = ":";
-
 	private final MascaraService service;
 	private final MessageSender messageSender;
 	private final ScheduleRepository scheduleRepository;
 	private final SubscribersRepository subscribersRepository;
 
 	private volatile LocalDate schedulerToday = TimeUtils.getToday();
-//	private volatile LocalDate schedulerToday = TimeUtils.getToday().minusDays(1); // test value
 
 	@Override
-//	@Scheduled(fixedRate = 120_000)
-	@Scheduled(fixedRate = 120_00) // test value
+	@Scheduled(fixedRate = 120_000)
 	public void checkSubscribersSchedule() {
-		subscribersRepository.findAll().forEach(subscriber -> {
-			Integer staffId = subscriber.getStaffId();
-			Long chatId = subscriber.getChatId();
+		List<Subscriber> allSubscribers = subscribersRepository.findAll();
+		groupByStaffId(allSubscribers).forEach((staffId, subscribers) -> {
+			List<Long> chatIds = subscribers.stream().map(Subscriber::getChatId).collect(Collectors.toList());
 			LocalDate now = TimeUtils.getToday();
 
-			Map<RelativeDay, String> dayToSchedule = getScheduleForTargetDays(staffId);
+			Map<RelativeDay, String> dayToSchedule = service.getScheduleForTargetDays(staffId);
 
 			List<Schedule> schedules = scheduleRepository.findAllByStaffId(staffId);
 			if (isEmpty(schedules)) {
-				initSchedules(staffId, chatId, dayToSchedule);
+				initSchedules(staffId, chatIds, dayToSchedule);
 				return;
 			}
 
 			if (isDayChanged(now)) {
-				changeDay(chatId, now, dayToSchedule, schedules);
+				changeDay(chatIds, now, dayToSchedule, schedules);
 				return;
 			}
 
 			schedules.stream()
 					.map(dbSchedule -> updateIfScheduleChanged(dayToSchedule, dbSchedule))
 					.filter(Objects::nonNull)
-					.forEach(actualSchedule -> notifyThatShecduleChaned(chatId, actualSchedule));
+					.forEach(actualSchedule -> notifyThatShceduleChaned(chatIds, actualSchedule));
 		});
+	}
+
+	private Map<Integer, List<Subscriber>> groupByStaffId(List<Subscriber> allSubscribers) {
+		return allSubscribers.stream().collect(Collectors.groupingBy(Subscriber::getStaffId));
 	}
 
 	private boolean isDayChanged(LocalDate now) {
 		return schedulerToday.isBefore(now);
 	}
 
-	private LinkedHashMap<RelativeDay, String> getScheduleForTargetDays(Integer staffId) {
-		return Arrays.stream(RelativeDay.values()).collect(Collectors.toMap(
-				Function.identity(),
-				relativeDay -> getScheduleForTargetDay(staffId, relativeDay),
-				(o1, o2) -> o1, LinkedHashMap::new
-		));
-	}
-
-	private void changeDay(Long chatId, LocalDate now, Map<RelativeDay, String> dayToSchedule, List<Schedule> schedules) {
-		messageSender.onDayChanged(chatId, dayToSchedule);
+	private void changeDay(List<Long> chatIds, LocalDate now, Map<RelativeDay, String> dayToSchedule, List<Schedule> schedules) {
+		messageSender.onDayChanged(chatIds, dayToSchedule);
 		schedulerToday = now;
 
 		schedules.forEach(dbSchedule -> updateIfScheduleChanged(dayToSchedule, dbSchedule));
 	}
 
-	private void initSchedules(Integer staffId, Long chatId, Map<RelativeDay, String> dayToSchedule) {
+	private void initSchedules(Integer staffId, List<Long> chatIds, Map<RelativeDay, String> dayToSchedule) {
 		dayToSchedule.forEach((relativeDay, schedule) -> {
 			saveSchedule(staffId, schedule, relativeDay);
-			notifyThatShecduleChaned(chatId, schedule);
+			notifyThatShceduleChaned(chatIds, schedule);
 		});
 	}
 
@@ -109,18 +99,8 @@ public class MascaraSchedulerImpl implements MascaraScheduler {
 		return null;
 	}
 
-	private void notifyThatShecduleChaned(Long chatId, String actualSchedule) {
-		messageSender.onScheduleChanged(chatId, actualSchedule);
-	}
-
-	private String getScheduleForTargetDay(Integer staffId, RelativeDay relativeDay) {
-		String prefix = makePrefix(relativeDay);
-		LocalDate targetDay = relativeDay.getDay().get();
-		return service.getScheduleFormatted(staffId, prefix, targetDay);
-	}
-
-	private String makePrefix(RelativeDay relativeDay) {
-		return relativeDay.getDescription() + DAY_DESCRIPTION_DELIMITER;
+	private void notifyThatShceduleChaned(List<Long> chatId, String actualSchedule) {
+		chatId.forEach(id -> messageSender.onScheduleChanged(id, actualSchedule));
 	}
 
 	private void saveSchedule(Integer staffId, String todaySchedule, RelativeDay day) {

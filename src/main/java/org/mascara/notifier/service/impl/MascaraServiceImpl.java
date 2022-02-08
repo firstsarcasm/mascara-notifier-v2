@@ -1,13 +1,17 @@
 package org.mascara.notifier.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.mascara.notifier.constant.RelativeDay;
 import org.mascara.notifier.integration.MascaraIntegrationImpl;
 import org.mascara.notifier.model.TimePeriod;
 import org.mascara.notifier.service.MascaraService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.mascara.notifier.constant.WorkTime.END_OF_WORK;
@@ -17,6 +21,8 @@ import static org.mascara.notifier.constant.WorkTime.START_OF_WORK;
 @Service
 @RequiredArgsConstructor
 public class MascaraServiceImpl implements MascaraService {
+
+	private static final String DAY_DESCRIPTION_DELIMITER = ":";
 
 	private final MascaraIntegrationImpl integration;
 
@@ -54,6 +60,23 @@ public class MascaraServiceImpl implements MascaraService {
 		return integration.getEmployeeIdByName(employeeName);
 	}
 
+	@Override
+	public LinkedHashMap<RelativeDay, String> getScheduleForTargetDays(Integer staffId) {
+		return Arrays.stream(RelativeDay.values()).collect(Collectors.toMap(
+				Function.identity(),
+				relativeDay -> getScheduleForTargetDay(staffId, relativeDay),
+				(o1, o2) -> o1, LinkedHashMap::new
+		));
+	}
+
+	private String getScheduleForTargetDay(Integer staffId, RelativeDay relativeDay) {
+		String prefix = makePrefix(relativeDay);
+		LocalDate targetDay = relativeDay.getDay().get();
+		return getScheduleFormatted(staffId, prefix, targetDay);
+	}
+	private String makePrefix(RelativeDay relativeDay) {
+		return relativeDay.getDescription() + DAY_DESCRIPTION_DELIMITER;
+	}
 
 	private boolean isStartOfWork(TimePeriod first) {
 		return START_OF_WORK.equals(first.getStarTime());

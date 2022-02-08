@@ -5,23 +5,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.mascara.notifier.constant.RelativeDay;
 import org.mascara.notifier.service.MascaraService;
 import org.mascara.notifier.service.SubscriptionService;
-import org.mascara.notifier.util.TimeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.mascara.notifier.util.TelegramUtils.extractChatId;
 import static org.mascara.notifier.util.TelegramUtils.hasTextMessage;
 
-//todo if caching work
-//todo сделать scheduler
-//todo сделать разные подключения к базе в зависимости от профиля(heroku,dev,etc)
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
+
+	private static final String MESSAGE_PREFIX = "------------------\n";
 
 	private final KeyboardMaker keyboardMaker;
 	private final MascaraService mascaraService;
@@ -43,8 +43,10 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 		return botToken;
 	}
 
+	//todo unit tests
+	//todo if caching work
+//todo сделать разные подключения к базе в зависимости от профиля(heroku,dev,etc)
 	//todo add integration retries ?
-	//todo проверить порядок отправки сообщений
 	//todo logs
 	//todo добавить на начальном экране выбор салона и сотрудника
 	@Override
@@ -52,8 +54,8 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 		var chatId = extractChatId(update);
 		sendMainKeyboard(chatId);
 
-//		Integer staffId = service.getStaffId("Даша С");
-		Integer staffId = mascaraService.getStaffId("Татьяна М");
+		Integer staffId = mascaraService.getStaffId("Даша С");
+//		Integer staffId = mascaraService.getStaffId("Татьяна М");
 
 		if (hasTextMessage(update)) {
 			String messageText = update.getMessage().getText();
@@ -85,26 +87,22 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 
 	@Override
 	public void onScheduleChanged(Long chatId, String newValue) {
-		//todo add//		"------------------"
+		sendTextMessage(chatId, MESSAGE_PREFIX);
 		sendTextMessage(chatId, "Расписание изменилось, теперь оно такое\n" + newValue);
 	}
 
 	@Override
-	public void onDayChanged(Long chatId, Map<RelativeDay, String> dayToSchedule) {
-		//todo add//		"------------------"
-		sendTextMessage(chatId, "Начался новый день, расписание:\n");
-		dayToSchedule.forEach((relativeDay, schedule) -> sendTextMessage(chatId, schedule));
+	public void onDayChanged(List<Long> chatIds, Map<RelativeDay, String> dayToSchedule) {
+		chatIds.forEach(chatId -> {
+			sendTextMessage(chatId, MESSAGE_PREFIX);
+			sendTextMessage(chatId, "Начался новый день, расписание:\n");
+			dayToSchedule.forEach((relativeDay, schedule) -> sendTextMessage(chatId, schedule));
+		});
 	}
 
 	private void sendScheduleForThreeDays(Long chatId, Integer staffId) {
-		//todo make with stream from days enum? Arrays.stream(RelativeDay.values()).forEach();
-		String todaySchedule = mascaraService.getScheduleFormatted(staffId, "Сегодня:", TimeUtils.getToday());
-		String tomorrowSchedule = mascaraService.getScheduleFormatted(staffId, "Завтра:", TimeUtils.getTomorrow());
-		String dayAfterTomorrowSchedule = mascaraService.getScheduleFormatted(staffId, "Послезавтра:", TimeUtils.getDayAfterTomorrow());
-
-		sendTextMessage(chatId, todaySchedule);
-		sendTextMessage(chatId, tomorrowSchedule);
-		sendTextMessage(chatId, dayAfterTomorrowSchedule);
+		mascaraService.getScheduleForTargetDays(staffId)
+				.forEach((relativeDay, schedule) -> sendTextMessage(chatId, schedule));
 	}
 
 	private void sendMainKeyboard(Long chatId) {

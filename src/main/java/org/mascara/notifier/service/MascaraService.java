@@ -1,6 +1,9 @@
 package org.mascara.notifier.service;
 
+import org.mascara.notifier.constant.RelativeDay;
+
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 
 public interface MascaraService {
 
@@ -12,4 +15,5 @@ public interface MascaraService {
 
 	Integer getStaffId(String employeeName);
 
+	LinkedHashMap<RelativeDay, String> getScheduleForTargetDays(Integer staffId);
 }

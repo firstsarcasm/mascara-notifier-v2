@@ -38,6 +38,8 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 	private static final String TIMETABLE_URL_TEMPLATE = "https://n652960.yclients.com/api/v1/book_staff_seances/%s/%s";
 	private static final String BOOK_DATES_URL_TEMPLATE = "https://n652960.yclients.com/api/v1/book_dates/%s?staff_id=%s&date=%s";
 	private static final String BOOK_TIMES_URL_TEMPLATE = "https://n652960.yclients.com/api/v1/book_times/%s/%s/%s";
+
+	//todo move to config
 	private static final String MASCARA_TOKEN = "Bearer yusw3yeu6hrr4r9j3gw6";
 
 	private final RestTemplate customRestTemplate;

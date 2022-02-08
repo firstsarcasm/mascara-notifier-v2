@@ -1,20 +1,26 @@
 ###
-GET http://n652960.yclients.com/api/v1/book_staff/617387
-authorization: Bearer yusw3yeu6hrr4r9j3gw6
+GET http://n652960.yclients.com/api/v1/book_staff/{{studio-id}}
+authorization:{{auth-token}}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
 
 ###
-GET http://n652960.yclients.com/api/v1/book_staff_seances/617387/1789971
-authorization: Bearer yusw3yeu6hrr4r9j3gw6
+GET http://n652960.yclients.com/api/v1/book_staff_seances/{{studio-id}}/{{staff-id}}
+authorization:{{auth-token}}
 
 ###
-GET https://n652960.yclients.com/api/v1/book_dates/617387?staff_id=1789971&date=2022-02-02
-authorization: Bearer yusw3yeu6hrr4r9j3gw6
+GET https://n652960.yclients.com/api/v1/book_dates/{{studio-id}}?staff_id={{staff-id}}&date=2022-02-02
+authorization:{{auth-token}}
 
 ###
-GET https://n652960.yclients.com/api/v1/book_times/617387/1789971/2022-02-05
-authorization: Bearer yusw3yeu6hrr4r9j3gw6
+GET https://n652960.yclients.com/api/v1/book_times/{{studio-id}}/{{staff-id}}/2022-02-05
+authorization:{{auth-token}}
 
 
 ###
-GET https://n652960.yclients.com/api/v1/book_times/617387/1789963/2022-02-04
-authorization: Bearer yusw3yeu6hrr4r9j3gw6
+GET https://n652960.yclients.com/api/v1/book_times/{{studio-id}}/1789963/2022-02-04
+authorization:{{auth-token}}

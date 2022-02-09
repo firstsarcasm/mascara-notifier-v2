@@ -8,7 +8,9 @@ import java.util.List;
 public interface MascaraIntegration {
 	List<TimePeriod> getBookedTime(Integer staffId, LocalDate date);
 
-	List<String> getBookDates(Integer staffId);
+	List<LocalDate> getBookingDates(Integer staffId);
+
+	List<LocalDate> getBookingDates(Integer staffId, LocalDate startOfThePeriod);
 
 	Integer getEmployeeIdByName(String name);
 }

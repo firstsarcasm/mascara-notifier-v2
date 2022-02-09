@@ -44,17 +44,19 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 	}
 
 	//todo unit tests
-	//todo check if caching work
 	//todo add integration retries ?
-	//todo logs
+	//todo add trace id
 	//todo добавить на начальном экране выбор салона и сотрудника
+	//todo @LogEntryAndExit
+	//todo не обновлять расписание на день если оно становится пустым?
+	//todo исправить кейс со сдвигом расписания на сегодня на 15 минут(хранить в базе не готовый текст(не только?), а json с данными)
 	@Override
 	public void onUpdateReceived(Update update) {
 		var chatId = extractChatId(update);
 		sendMainKeyboard(chatId);
 
 		Integer staffId = mascaraService.getStaffId("Даша С");
-//		Integer staffId = mascaraService.getStaffId("Татьяна М");
+//		Integer staffId = mascaraService.getStaffId("Ума");
 
 		if (hasTextMessage(update)) {
 			String messageText = update.getMessage().getText();

@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,18 +53,23 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 		var response = customRestTemplate.exchange(request, FreeBookingTime[].class);
 		List<TimePeriod> freeTimePeriods = toTimePeriods(response);
 
-		return getBookedTimeListFromFreeTime(freeTimePeriods);
+		return getBookedTimeListFromFreeTime(freeTimePeriods, date);
 	}
 
 	@Override
-	public List<String> getBookDates(Integer staffId) {
-		URI uri = URI.create(String.format(BOOK_DATES_URL_TEMPLATE, UZHNAYA.getCode(), staffId, TimeUtils.getToday()));
+	public List<LocalDate> getBookingDates(Integer staffId) {
+		return getBookingDates(staffId, TimeUtils.getToday());
+	}
+
+	@Override
+	public List<LocalDate> getBookingDates(Integer staffId, LocalDate startOfThePeriod) {
+		URI uri = URI.create(String.format(BOOK_DATES_URL_TEMPLATE, UZHNAYA.getCode(), staffId, startOfThePeriod));
 		RequestEntity<Void> request = makeGetRequest(uri);
 
 		var response = customRestTemplate.exchange(request, BookDatesResponse.class);
 		return Optional.of(response)
 				.map(HttpEntity::getBody)
-				.map(BookDatesResponse::getWorkingDates)
+				.map(BookDatesResponse::getBookingDates)
 				.orElse(null);
 	}
 
@@ -94,14 +100,17 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 				.orElseThrow();
 	}
 
-	private List<TimePeriod> getBookedTimeListFromFreeTime(List<TimePeriod> possibleServiceTimePeriods) {
+	private List<TimePeriod> getBookedTimeListFromFreeTime(List<TimePeriod> possibleServiceTimePeriods, LocalDate date) {
 		List<TimePeriod> bookedPeriods = new ArrayList<>();
 		if (isEmpty(possibleServiceTimePeriods)) {
 			return bookedPeriods;
 		}
 
+		//todo we need some refactoring here
 		LocalTime starTime = possibleServiceTimePeriods.get(0).getStarTime();
-		if (!starTime.equals(START_OF_WORK)) {
+		LocalDateTime today = TimeUtils.getTodayDateTime();
+		LocalTime localTime = today.toLocalTime().plusMinutes(15);
+		if (!starTime.equals(START_OF_WORK) && !(date.isEqual(today.toLocalDate()) && (localTime.isAfter(starTime) || localTime.equals(starTime)))) {
 			bookedPeriods.add(new TimePeriod(START_OF_WORK, starTime));
 		}
 

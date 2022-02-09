@@ -5,6 +5,7 @@ import org.mascara.notifier.constant.RelativeDay;
 import org.mascara.notifier.integration.MascaraIntegrationImpl;
 import org.mascara.notifier.model.TimePeriod;
 import org.mascara.notifier.service.MascaraService;
+import org.mascara.notifier.util.TimeUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,17 +32,20 @@ public class MascaraServiceImpl implements MascaraService {
 		List<TimePeriod> bookedTime = integration.getBookedTime(staffId, day);
 
 		if (bookedTime.isEmpty()) {
+			if (isWorkingDay(staffId, day)) {
+				return "записей нет(";
+			}
 			return "выходной!";
-		}
-
-		TimePeriod firstBookedTime = bookedTime.get(0);
-		if (isStartOfWork(firstBookedTime) && isEndOfWork(firstBookedTime)) {
-			return "записей нет(";
 		}
 
 		return bookedTime.stream()
 				.map(period -> "Запись: %s - %s\n".formatted(period.getStarTime(), period.getEndTime()))
 				.collect(Collectors.joining());
+	}
+
+	private boolean isWorkingDay(Integer staffId, LocalDate day) {
+		List<LocalDate> workingDates = integration.getBookingDates(staffId, TimeUtils.getToday().withDayOfMonth(1));
+		return workingDates.contains(day);
 	}
 
 	@Override
@@ -52,7 +56,9 @@ public class MascaraServiceImpl implements MascaraService {
 
 	@Override
 	public String getDatesFormatted(Integer staffId) {
-		return String.join(System.lineSeparator(), integration.getBookDates(staffId));
+		return integration.getBookingDates(staffId).stream()
+				.map(LocalDate::toString)
+				.collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	@Override

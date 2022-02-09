@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -12,9 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 public class BookDatesResponse {
 	@JsonProperty("working_dates")
-	private List<String> bookingDates;
+	private List<LocalDate> bookingDates;
 	//	private WorkingDays workingDays;
 //	private BookingDays bookingDays;
 	@JsonProperty("booking_dates")
-	private List<String> workingDates;
+	private List<LocalDate> workingDates;
 }

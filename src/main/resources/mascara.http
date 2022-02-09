@@ -17,9 +17,13 @@ GET https://n652960.yclients.com/api/v1/book_dates/{{studio-id}}?staff_id={{staf
 authorization:{{auth-token}}
 
 ###
-GET https://n652960.yclients.com/api/v1/book_times/{{studio-id}}/{{staff-id}}/2022-02-05
+GET https://n652960.yclients.com/api/v1/book_times/{{studio-id}}/{{staff-id}}/2022-02-13
 authorization:{{auth-token}}
 
 ###
-GET https://n652960.yclients.com/api/v1/book_times/{{studio-id}}/1789963/2022-02-04
+GET https://n652960.yclients.com/api/v1/book_times/{{studio-id}}/{{staff-id}}/2022-02-04
+authorization:{{auth-token}}
+
+###
+GET https://n652960.yclients.com/api/v1/countries
 authorization:{{auth-token}}

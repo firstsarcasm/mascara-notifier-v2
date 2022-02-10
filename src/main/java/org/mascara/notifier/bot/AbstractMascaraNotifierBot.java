@@ -1,6 +1,7 @@
 package org.mascara.notifier.bot;
 
 import lombok.extern.slf4j.Slf4j;
+import org.mascara.notifier.logging.LogEntryAndExit;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -16,7 +17,7 @@ public abstract class AbstractMascaraNotifierBot extends TelegramLongPollingBot 
 		}
 	}
 
-	//todo @LogEntryAndExit
+	@LogEntryAndExit
 	protected void sendTextMessage(Long chatId, String text) {
 		var message = SendMessage.builder()
 				.text(text)

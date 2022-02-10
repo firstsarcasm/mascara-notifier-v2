@@ -13,7 +13,7 @@ GET http://n652960.yclients.com/api/v1/book_staff_seances/{{studio-id}}/{{staff-
 authorization:{{auth-token}}
 
 ###
-GET https://n652960.yclients.com/api/v1/book_dates/{{studio-id}}?staff_id={{staff-id}}&date=2022-02-01
+GET https://n652960.yclients.com/api/v1/book_dates/{{studio-id}}?staff_id={{staff-id}}&date=2022-01-01
 authorization:{{auth-token}}
 
 ###

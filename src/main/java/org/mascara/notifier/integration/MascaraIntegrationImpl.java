@@ -1,6 +1,7 @@
 package org.mascara.notifier.integration;
 
 import lombok.RequiredArgsConstructor;
+import org.mascara.notifier.logging.LogEntryAndExit;
 import org.mascara.notifier.mapping.AvailableBookingTimeMapper;
 import org.mascara.notifier.model.TimePeriod;
 import org.mascara.notifier.model.days.response.BookDatesResponse;
@@ -46,6 +47,7 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 	private final AvailableBookingTimeMapper availableBookingTimeMapper;
 
 	@Override
+	@LogEntryAndExit
 	public List<TimePeriod> getBookedTime(Integer staffId, LocalDate date) {
 		URI uri = URI.create(String.format(BOOK_TIMES_URL_TEMPLATE, UZHNAYA.getCode(), staffId, date));
 		RequestEntity<Void> request = makeGetRequest(uri);
@@ -57,11 +59,13 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 	}
 
 	@Override
+	@LogEntryAndExit
 	public List<LocalDate> getBookingDates(Integer staffId) {
 		return getBookingDates(staffId, TimeUtils.getToday());
 	}
 
 	@Override
+	@LogEntryAndExit
 	public List<LocalDate> getBookingDates(Integer staffId, LocalDate startOfThePeriod) {
 		URI uri = URI.create(String.format(BOOK_DATES_URL_TEMPLATE, UZHNAYA.getCode(), staffId, startOfThePeriod));
 		RequestEntity<Void> request = makeGetRequest(uri);
@@ -81,6 +85,7 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 	}
 
 	@Override
+	@LogEntryAndExit
 	public Integer getEmployeeIdByName(String name) {
 		URI uri = URI.create(String.format(STAFF_URL_TEMPLATE, UZHNAYA.getCode()));
 		RequestEntity<Void> request = makeGetRequest(uri);

@@ -3,6 +3,7 @@ package org.mascara.notifier.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.mascara.notifier.constant.RelativeDay;
 import org.mascara.notifier.integration.MascaraIntegrationImpl;
+import org.mascara.notifier.logging.LogEntryAndExit;
 import org.mascara.notifier.model.TimePeriod;
 import org.mascara.notifier.service.MascaraService;
 import org.mascara.notifier.util.TimeUtils;
@@ -28,6 +29,7 @@ public class MascaraServiceImpl implements MascaraService {
 	private final MascaraIntegrationImpl integration;
 
 	@Override
+	@LogEntryAndExit
 	public String getSchedule(Integer staffId, LocalDate day) {
 		List<TimePeriod> bookedTime = integration.getBookedTime(staffId, day);
 
@@ -49,12 +51,14 @@ public class MascaraServiceImpl implements MascaraService {
 	}
 
 	@Override
+	@LogEntryAndExit
 	public String getScheduleFormatted(Integer staffId, String prefix, LocalDate day) {
 		String schedule = getSchedule(staffId, day);
 		return "%s \n%s".formatted(prefix, schedule);
 	}
 
 	@Override
+	@LogEntryAndExit
 	public String getDatesFormatted(Integer staffId) {
 		return integration.getBookingDates(staffId).stream()
 				.map(LocalDate::toString)
@@ -62,11 +66,13 @@ public class MascaraServiceImpl implements MascaraService {
 	}
 
 	@Override
+	@LogEntryAndExit
 	public Integer getStaffId(String employeeName) {
 		return integration.getEmployeeIdByName(employeeName);
 	}
 
 	@Override
+	@LogEntryAndExit
 	public LinkedHashMap<RelativeDay, String> getScheduleForTargetDays(Integer staffId) {
 		return Arrays.stream(RelativeDay.values()).collect(Collectors.toMap(
 				Function.identity(),

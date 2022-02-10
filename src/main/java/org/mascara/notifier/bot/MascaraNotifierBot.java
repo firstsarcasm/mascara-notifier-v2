@@ -15,7 +15,6 @@ import java.util.Map;
 import static org.mascara.notifier.util.TelegramUtils.extractChatId;
 import static org.mascara.notifier.util.TelegramUtils.hasTextMessage;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -44,12 +43,8 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 	}
 
 	//todo unit tests
-	//todo add integration retries ?
-	//todo add trace id
 	//todo добавить на начальном экране выбор салона и сотрудника
-	//todo @LogEntryAndExit
 	//todo не обновлять расписание на день если оно становится пустым?
-	//todo исправить кейс со сдвигом расписания на сегодня на 15 минут(хранить в базе не готовый текст(не только?), а json с данными)
 	@Override
 	public void onUpdateReceived(Update update) {
 		var chatId = extractChatId(update);
@@ -88,15 +83,13 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 
 	@Override
 	public void onScheduleChanged(Long chatId, String newValue) {
-		sendTextMessage(chatId, MESSAGE_PREFIX);
-		sendTextMessage(chatId, "Расписание изменилось, теперь оно такое\n" + newValue);
+		sendTextMessage(chatId, MESSAGE_PREFIX + "Расписание изменилось, теперь оно такое\n" + newValue);
 	}
 
 	@Override
 	public void onDayChanged(List<Long> chatIds, Map<RelativeDay, String> dayToSchedule) {
 		chatIds.forEach(chatId -> {
-			sendTextMessage(chatId, MESSAGE_PREFIX);
-			sendTextMessage(chatId, "Начался новый день, расписание:\n");
+			sendTextMessage(chatId, MESSAGE_PREFIX + "Начался новый день, расписание:\n");
 			dayToSchedule.forEach((relativeDay, schedule) -> sendTextMessage(chatId, schedule));
 		});
 	}

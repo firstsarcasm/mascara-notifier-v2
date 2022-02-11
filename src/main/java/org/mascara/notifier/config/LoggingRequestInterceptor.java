@@ -35,7 +35,6 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
 				Request body: {}",
 				===========================request end===============================================
 				""", request.getURI(), request.getMethod(), request.getHeaders(), new String(body, StandardCharsets.UTF_8));
-
 	}
 
 	private void logResponse(ClientHttpResponse response) throws IOException {
@@ -55,7 +54,6 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
 		InputStreamReader in = new InputStreamReader(response.getBody(), StandardCharsets.UTF_8);
 		return new BufferedReader(in).lines()
 				.collect(Collectors.joining("\n"));
-//		return "";
 	}
 
 }

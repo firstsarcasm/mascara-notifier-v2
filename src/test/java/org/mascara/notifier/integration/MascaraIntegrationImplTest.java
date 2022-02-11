@@ -50,6 +50,5 @@ class MascaraIntegrationImplTest {
 		List<TimePeriod> bookedTime = integration.getBookedTime(123, now);
 
 		System.out.println(bookedTime);
-
 	}
 }

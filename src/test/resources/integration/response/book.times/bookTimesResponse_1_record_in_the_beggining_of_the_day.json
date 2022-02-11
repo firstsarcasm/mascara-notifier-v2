@@ -1,0 +1,134 @@
+[
+  {
+    "time": "11:00",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T11:00:00+0300"
+  },
+  {
+    "time": "11:30",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T11:30:00+0300"
+  },
+  {
+    "time": "12:00",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T12:00:00+0300"
+  },
+  {
+    "time": "12:30",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T12:30:00+0300"
+  },
+  {
+    "time": "13:00",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T13:00:00+0300"
+  },
+  {
+    "time": "13:30",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T13:30:00+0300"
+  },
+  {
+    "time": "14:00",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T14:00:00+0300"
+  },
+  {
+    "time": "14:30",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T14:30:00+0300"
+  },
+  {
+    "time": "15:00",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T15:00:00+0300"
+  },
+  {
+    "time": "15:30",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T15:30:00+0300"
+  },
+  {
+    "time": "16:00",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T16:00:00+0300"
+  },
+  {
+    "time": "16:30",
+    "seance_length": 18600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T16:30:00+0300"
+  },
+  {
+    "time": "17:00",
+    "seance_length": 16200,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T17:00:00+0300"
+  },
+  {
+    "time": "17:30",
+    "seance_length": 16200,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T17:30:00+0300"
+  },
+  {
+    "time": "18:00",
+    "seance_length": 14400,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T18:00:00+0300"
+  },
+  {
+    "time": "18:30",
+    "seance_length": 12600,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T18:30:00+0300"
+  },
+  {
+    "time": "19:00",
+    "seance_length": 10800,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T19:00:00+0300"
+  },
+  {
+    "time": "19:30",
+    "seance_length": 9000,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T19:30:00+0300"
+  },
+  {
+    "time": "20:00",
+    "seance_length": 7200,
+    "sum_length": 7200,
+    "datetime": "2022-02-16T20:00:00+0300"
+  },
+  {
+    "time": "20:30",
+    "seance_length": 5400,
+    "sum_length": 5400,
+    "datetime": "2022-02-16T20:30:00+0300"
+  },
+  {
+    "time": "21:00",
+    "seance_length": 3600,
+    "sum_length": 2400,
+    "datetime": "2022-02-16T21:00:00+0300"
+  },
+  {
+    "time": "21:30",
+    "seance_length": 1800,
+    "sum_length": 1800,
+    "datetime": "2022-02-16T21:30:00+0300"
+  }
+]

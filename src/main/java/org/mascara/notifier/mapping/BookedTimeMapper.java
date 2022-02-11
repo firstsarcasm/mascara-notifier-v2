@@ -2,6 +2,7 @@ package org.mascara.notifier.mapping;
 
 import org.mascara.notifier.model.TimePeriod;
 import org.mascara.notifier.util.TimeUtils;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import static org.mascara.notifier.constant.WorkTime.END_OF_WORK;
 import static org.mascara.notifier.constant.WorkTime.START_OF_WORK;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+@Component
 public class BookedTimeMapper {
 
 	public List<TimePeriod> fromFreeTime(List<TimePeriod> possibleServiceTimePeriods, LocalDate date) {

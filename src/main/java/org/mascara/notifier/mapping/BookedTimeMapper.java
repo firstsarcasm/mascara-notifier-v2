@@ -53,4 +53,13 @@ public class BookedTimeMapper {
 			}
 		}
 	}
+
+	private boolean isStartOfWork(TimePeriod first) {
+		return START_OF_WORK.equals(first.getStarTime());
+	}
+
+	private boolean isEndOfWork(TimePeriod first) {
+		return END_OF_WORK.equals(first.getEndTime());
+	}
+
 }

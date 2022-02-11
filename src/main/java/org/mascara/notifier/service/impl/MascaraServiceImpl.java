@@ -16,9 +16,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.mascara.notifier.constant.WorkTime.END_OF_WORK;
-import static org.mascara.notifier.constant.WorkTime.START_OF_WORK;
-
 //todo constants
 @Service
 @RequiredArgsConstructor
@@ -90,13 +87,6 @@ public class MascaraServiceImpl implements MascaraService {
 		return relativeDay.getDescription() + DAY_DESCRIPTION_DELIMITER;
 	}
 
-	private boolean isStartOfWork(TimePeriod first) {
-		return START_OF_WORK.equals(first.getStarTime());
-	}
-
-	private boolean isEndOfWork(TimePeriod first) {
-		return END_OF_WORK.equals(first.getEndTime());
-	}
 
 }
 

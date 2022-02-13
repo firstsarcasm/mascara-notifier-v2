@@ -11,6 +11,7 @@ import org.mascara.notifier.model.staff.response.Employee;
 import org.mascara.notifier.model.times.response.FreeBookingTime;
 import org.mascara.notifier.repository.BookedTimeCacheRepository;
 import org.mascara.notifier.util.TimeUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -74,7 +75,7 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 					.build());
 			return actualBookedTime;
 		}
-		if (!isEmpty(actualBookedTime) && actualBookedTime.size() == 1 && actualBookedTime.get(0).getEndTime().plusMinutes(5).equals(LocalTime.of(22, 0))) {
+		if (!isEmpty(actualBookedTime) && actualBookedTime.size() == 1 && actualBookedTime.get(0).getStarTime().plusMinutes(5).equals(LocalTime.of(22, 0))) {
 			return emptyList();
 		}
 		List<TimePeriod> previousBookedTime = bookedTimeCache.getSchedule();
@@ -108,6 +109,7 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 
 	@Override
 	@LogEntryAndExit
+	@Cacheable("bookedDates")
 	public List<LocalDate> getBookingDates(Integer staffId, LocalDate startOfThePeriod) {
 		URI uri = URI.create(String.format(BOOK_DATES_URL_TEMPLATE, UZHNAYA.getCode(), staffId, startOfThePeriod));
 		RequestEntity<Void> request = makeGetRequest(uri);

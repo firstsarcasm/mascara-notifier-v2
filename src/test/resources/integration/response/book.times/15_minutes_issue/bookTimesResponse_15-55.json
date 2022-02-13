@@ -1,0 +1,110 @@
+[
+  {
+    "time": "11:15",
+    "seance_length": 12600,
+    "sum_length": 9000,
+    "datetime": "2022-02-13T11:15:00+0300"
+  },
+  {
+    "time": "11:45",
+    "seance_length": 12600,
+    "sum_length": 9000,
+    "datetime": "2022-02-13T11:45:00+0300"
+  },
+  {
+    "time": "12:15",
+    "seance_length": 12600,
+    "sum_length": 9000,
+    "datetime": "2022-02-13T12:15:00+0300"
+  },
+  {
+    "time": "12:45",
+    "seance_length": 10800,
+    "sum_length": 9000,
+    "datetime": "2022-02-13T12:45:00+0300"
+  },
+  {
+    "time": "13:15",
+    "seance_length": 9600,
+    "sum_length": 9000,
+    "datetime": "2022-02-13T13:15:00+0300"
+  },
+  {
+    "time": "13:45",
+    "seance_length": 7800,
+    "sum_length": 3600,
+    "datetime": "2022-02-13T13:45:00+0300"
+  },
+  {
+    "time": "14:15",
+    "seance_length": 5400,
+    "sum_length": 3600,
+    "datetime": "2022-02-13T14:15:00+0300"
+  },
+  {
+    "time": "14:45",
+    "seance_length": 4200,
+    "sum_length": 3600,
+    "datetime": "2022-02-13T14:45:00+0300"
+  },
+  {
+    "time": "15:15",
+    "seance_length": 1800,
+    "sum_length": 1800,
+    "datetime": "2022-02-13T15:15:00+0300"
+  },
+  {
+    "time": "15:45",
+    "seance_length": 600,
+    "sum_length": 600,
+    "datetime": "2022-02-13T15:45:00+0300"
+  },
+  {
+    "time": "18:30",
+    "seance_length": 12600,
+    "sum_length": 9000,
+    "datetime": "2022-02-13T18:30:00+0300"
+  },
+  {
+    "time": "19:00",
+    "seance_length": 10800,
+    "sum_length": 9000,
+    "datetime": "2022-02-13T19:00:00+0300"
+  },
+  {
+    "time": "19:30",
+    "seance_length": 9000,
+    "sum_length": 9000,
+    "datetime": "2022-02-13T19:30:00+0300"
+  },
+  {
+    "time": "20:00",
+    "seance_length": 7200,
+    "sum_length": 3600,
+    "datetime": "2022-02-13T20:00:00+0300"
+  },
+  {
+    "time": "20:30",
+    "seance_length": 5400,
+    "sum_length": 3600,
+    "datetime": "2022-02-13T20:30:00+0300"
+  },
+  {
+    "time": "21:00",
+    "seance_length": 3600,
+    "sum_length": 3600,
+    "datetime": "2022-02-13T21:00:00+0300"
+  },
+  {
+    "time": "21:30",
+    "seance_length": 1800,
+    "sum_length": 1800,
+    "datetime": "2022-02-13T21:30:00+0300"
+  },
+  {
+    "time": "22:00",
+    "seance_length": 0,
+    "sum_length": 0,
+    "datetime": "2022-02-13T22:00:00+0300"
+  }
+]

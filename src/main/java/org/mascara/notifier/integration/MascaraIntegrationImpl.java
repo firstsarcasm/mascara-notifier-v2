@@ -1,6 +1,7 @@
 package org.mascara.notifier.integration;
 
 import lombok.RequiredArgsConstructor;
+import org.mascara.notifier.entity.BookedTimeCache;
 import org.mascara.notifier.logging.LogEntryAndExit;
 import org.mascara.notifier.mapping.AvailableBookingTimeMapper;
 import org.mascara.notifier.mapping.BookedTimeMapper;
@@ -8,6 +9,7 @@ import org.mascara.notifier.model.TimePeriod;
 import org.mascara.notifier.model.days.response.BookDatesResponse;
 import org.mascara.notifier.model.staff.response.Employee;
 import org.mascara.notifier.model.times.response.FreeBookingTime;
+import org.mascara.notifier.repository.BookedTimeCacheRepository;
 import org.mascara.notifier.util.TimeUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
@@ -19,12 +21,15 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
 import static org.mascara.notifier.constant.Studio.UZHNAYA;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Component
 @RequiredArgsConstructor
@@ -41,6 +46,7 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 	private final RestTemplate customRestTemplate;
 	private final AvailableBookingTimeMapper availableBookingTimeMapper;
 	private final BookedTimeMapper bookedTimeMapper;
+	private final BookedTimeCacheRepository bookedTimeCacheRepository;
 
 	@Override
 	@LogEntryAndExit
@@ -51,8 +57,44 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 		var response = customRestTemplate.exchange(request, FreeBookingTime[].class);
 		List<TimePeriod> freeTimePeriods = toTimePeriods(response);
 
-		return bookedTimeMapper.fromFreeTime(freeTimePeriods, date);
+		List<TimePeriod> actualBookedTime = bookedTimeMapper.fromFreeTime(freeTimePeriods, date);
+		return returnFromCacheIfChangesInsignificant(actualBookedTime, staffId, date);
 	}
+
+	//todo we need some refactoring here
+	private List<TimePeriod> returnFromCacheIfChangesInsignificant(List<TimePeriod> actualBookedTime, Integer staffId, LocalDate date) {
+		BookedTimeCache bookedTimeCache = bookedTimeCacheRepository.findByStaffIdAndDate(staffId, date);
+		if (isNull(bookedTimeCache)) {
+			bookedTimeCacheRepository.save(BookedTimeCache.builder()
+							.date(date)
+							.staffId(staffId)
+							.schedule(actualBookedTime)
+					.build());
+			return actualBookedTime;
+		}
+		List<TimePeriod> previousBookedTime = bookedTimeCache.getSchedule();
+		if (!isEmpty(actualBookedTime) && !actualBookedTime.equals(previousBookedTime) && actualBookedTime.size() == previousBookedTime.size()) {
+			List<TimePeriod> stabilizedBookedTime = new LinkedList<>();
+			for (int i = 0; i < actualBookedTime.size(); i++) {
+				TimePeriod actualItem = actualBookedTime.get(i);
+				TimePeriod previousItem = previousBookedTime.get(i);
+				if (actualItem.getStarTime().equals(previousItem.getStarTime())) {
+					stabilizedBookedTime.add(actualItem);
+					continue;
+				}
+				if (actualItem.getStarTime().plusMinutes(5).equals(previousItem.getStarTime())
+						|| actualItem.getStarTime().minusMinutes(5).equals(previousItem.getStarTime())) {
+					stabilizedBookedTime.add(previousItem);
+					continue;
+				} else {
+					return actualBookedTime;
+				}
+			}
+			return stabilizedBookedTime;
+		}
+		return actualBookedTime;
+	}
+
 
 	@Override
 	@LogEntryAndExit

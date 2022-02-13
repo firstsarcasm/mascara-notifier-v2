@@ -1,0 +1,44 @@
+[
+  {
+    "time": "18:45",
+    "seance_length": 10800,
+    "sum_length": 9000,
+    "datetime": "2022-02-13T18:45:00+0300"
+  },
+  {
+    "time": "19:15",
+    "seance_length": 9600,
+    "sum_length": 9000,
+    "datetime": "2022-02-13T19:15:00+0300"
+  },
+  {
+    "time": "19:45",
+    "seance_length": 7800,
+    "sum_length": 3600,
+    "datetime": "2022-02-13T19:45:00+0300"
+  },
+  {
+    "time": "20:15",
+    "seance_length": 5400,
+    "sum_length": 3600,
+    "datetime": "2022-02-13T20:15:00+0300"
+  },
+  {
+    "time": "20:45",
+    "seance_length": 4200,
+    "sum_length": 3600,
+    "datetime": "2022-02-13T20:45:00+0300"
+  },
+  {
+    "time": "21:15",
+    "seance_length": 1800,
+    "sum_length": 1800,
+    "datetime": "2022-02-13T21:15:00+0300"
+  },
+  {
+    "time": "21:45",
+    "seance_length": 600,
+    "sum_length": 600,
+    "datetime": "2022-02-13T21:45:00+0300"
+  }
+]

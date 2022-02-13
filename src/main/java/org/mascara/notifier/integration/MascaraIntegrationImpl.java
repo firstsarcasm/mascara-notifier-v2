@@ -20,12 +20,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static org.mascara.notifier.constant.Studio.UZHNAYA;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -72,6 +74,9 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 					.build());
 			return actualBookedTime;
 		}
+		if (!isEmpty(actualBookedTime) && actualBookedTime.size() == 1 && actualBookedTime.get(0).getEndTime().plusMinutes(5).equals(LocalTime.of(22, 0))) {
+			return emptyList();
+		}
 		List<TimePeriod> previousBookedTime = bookedTimeCache.getSchedule();
 		if (!isEmpty(actualBookedTime) && !actualBookedTime.equals(previousBookedTime) && actualBookedTime.size() == previousBookedTime.size()) {
 			List<TimePeriod> stabilizedBookedTime = new LinkedList<>();
@@ -94,7 +99,6 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 		}
 		return actualBookedTime;
 	}
-
 
 	@Override
 	@LogEntryAndExit

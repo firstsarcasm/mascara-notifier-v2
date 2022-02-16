@@ -6,6 +6,7 @@ import org.mascara.notifier.bot.MessageSender;
 import org.mascara.notifier.constant.RelativeDay;
 import org.mascara.notifier.entity.Schedule;
 import org.mascara.notifier.entity.Subscriber;
+import org.mascara.notifier.logging.LogEntryAndExit;
 import org.mascara.notifier.repository.ScheduleRepository;
 import org.mascara.notifier.repository.SubscribersRepository;
 import org.mascara.notifier.service.MascaraScheduler;
@@ -36,21 +37,27 @@ public class MascaraSchedulerImpl implements MascaraScheduler {
 
 	@Override
 	@Scheduled(fixedRate = 120_000)
+	@LogEntryAndExit
 	public void checkSubscribersSchedule() {
 		List<Subscriber> allSubscribers = subscribersRepository.findAll();
+		log.info("check schedule for subscribers '{}'", allSubscribers);
 		groupByStaffId(allSubscribers).forEach((staffId, subscribers) -> {
+			log.info("check schedule for staffId '{}' and subscribers '{}'", staffId, allSubscribers);
 			List<Long> chatIds = subscribers.stream().map(Subscriber::getChatId).collect(Collectors.toList());
+			log.info("chatIds '{}' to send info about staffId '{}'", chatIds, staffId);
 			LocalDate now = TimeUtils.getToday();
 
 			Map<RelativeDay, String> dayToSchedule = service.getScheduleForTargetDays(staffId);
 
 			List<Schedule> schedules = scheduleRepository.findAllByStaffId(staffId);
 			if (isEmpty(schedules)) {
+				log.info("schedule is empty in db, setting the initial value");
 				initSchedules(staffId, chatIds, dayToSchedule);
 				return;
 			}
 
 			if (isDayChanged(now)) {
+				log.info("the day has changed. now is '{}'", now);
 				changeDay(chatIds, now, dayToSchedule, schedules);
 				return;
 			}

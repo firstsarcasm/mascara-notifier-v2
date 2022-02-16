@@ -3,6 +3,7 @@ package org.mascara.notifier.bot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mascara.notifier.constant.RelativeDay;
+import org.mascara.notifier.logging.LogEntryAndExit;
 import org.mascara.notifier.service.MascaraService;
 import org.mascara.notifier.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,11 +83,13 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 	}
 
 	@Override
+	@LogEntryAndExit
 	public void onScheduleChanged(Long chatId, String newValue) {
 		sendTextMessage(chatId, MESSAGE_PREFIX + "Расписание изменилось, теперь оно такое\n" + newValue);
 	}
 
 	@Override
+	@LogEntryAndExit
 	public void onDayChanged(List<Long> chatIds, Map<RelativeDay, String> dayToSchedule) {
 		chatIds.forEach(chatId -> {
 			sendTextMessage(chatId, MESSAGE_PREFIX + "Начался новый день, расписание:\n");

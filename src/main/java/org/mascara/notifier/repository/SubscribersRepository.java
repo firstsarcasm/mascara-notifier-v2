@@ -28,6 +28,5 @@ public interface SubscribersRepository extends JpaRepository<Subscriber, Long> {
 	}
 
 	@Override
-	@Cacheable("subscribers")
 	List<Subscriber> findAll();
 }

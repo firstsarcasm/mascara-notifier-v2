@@ -68,7 +68,7 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 	private List<TimePeriod> returnFromCacheIfChangesInsignificant(List<TimePeriod> actualBookedTime, Integer staffId, LocalDate date) {
 		BookedTimeCache bookedTimeCache = bookedTimeCacheRepository.findByStaffIdAndDate(staffId, date);
 		if (isNull(bookedTimeCache)) {
-			saveToDb(date, staffId, actualBookedTime);
+			saveToDb(date, staffId, actualBookedTime, bookedTimeCache);
 			return actualBookedTime;
 		}
 		if (!isEmpty(actualBookedTime) && actualBookedTime.size() == 1 && actualBookedTime.get(0).getStarTime().plusMinutes(5).equals(LocalTime.of(22, 0))) {
@@ -89,22 +89,27 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 					stabilizedBookedTime.add(previousItem);
 					continue;
 				} else {
-					saveToDb(date, staffId, actualBookedTime);
+					saveToDb(date, staffId, actualBookedTime, bookedTimeCache);
 					return actualBookedTime;
 				}
 			}
 			return stabilizedBookedTime;
 		}
-		saveToDb(date, staffId, actualBookedTime);
+		saveToDb(date, staffId, actualBookedTime, bookedTimeCache);
 		return actualBookedTime;
 	}
 
-	private void saveToDb(LocalDate date, Integer staffId, List<TimePeriod> actualBookedTime) {
-		bookedTimeCacheRepository.save(BookedTimeCache.builder()
-				.date(date)
-				.staffId(staffId)
-				.schedule(actualBookedTime)
-				.build());
+	private void saveToDb(LocalDate date, Integer staffId, List<TimePeriod> actualBookedTime, BookedTimeCache bookedTimeCache) {
+		if (isNull(bookedTimeCache)) {
+			bookedTimeCacheRepository.save(BookedTimeCache.builder()
+					.date(date)
+					.staffId(staffId)
+					.schedule(actualBookedTime)
+					.build());
+			return;
+		}
+		bookedTimeCache.setSchedule(actualBookedTime);
+		bookedTimeCacheRepository.save(bookedTimeCache);
 	}
 
 	@Override

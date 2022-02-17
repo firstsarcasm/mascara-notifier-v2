@@ -65,7 +65,7 @@ public class MascaraSchedulerImpl implements MascaraScheduler {
 			schedules.stream()
 					.map(dbSchedule -> updateIfScheduleChanged(dayToSchedule, dbSchedule))
 					.filter(Objects::nonNull)
-					.forEach(actualSchedule -> notifyThatShceduleChaned(chatIds, actualSchedule));
+					.forEach(actualSchedule -> notifyThatScheduleChanged(chatIds, actualSchedule));
 		});
 	}
 
@@ -87,7 +87,7 @@ public class MascaraSchedulerImpl implements MascaraScheduler {
 	private void initSchedules(Integer staffId, List<Long> chatIds, Map<RelativeDay, String> dayToSchedule) {
 		dayToSchedule.forEach((relativeDay, schedule) -> {
 			saveSchedule(staffId, schedule, relativeDay);
-			notifyThatShceduleChaned(chatIds, schedule);
+			notifyThatScheduleChanged(chatIds, schedule);
 		});
 	}
 
@@ -106,7 +106,7 @@ public class MascaraSchedulerImpl implements MascaraScheduler {
 		return null;
 	}
 
-	private void notifyThatShceduleChaned(List<Long> chatId, String actualSchedule) {
+	private void notifyThatScheduleChanged(List<Long> chatId, String actualSchedule) {
 		chatId.forEach(id -> messageSender.onScheduleChanged(id, actualSchedule));
 	}
 

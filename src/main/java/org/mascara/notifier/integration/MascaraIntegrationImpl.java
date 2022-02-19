@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -31,6 +32,7 @@ import java.util.stream.Stream;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static org.mascara.notifier.constant.Studio.UZHNAYA;
+import static org.mascara.notifier.constant.WorkTime.START_OF_WORK;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -66,6 +68,10 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 
 	//todo we need some refactoring here
 	private List<TimePeriod> returnFromCacheIfChangesInsignificant(List<TimePeriod> actualBookedTime, Integer staffId, LocalDate date) {
+		LocalDateTime actualDateTime = TimeUtils.getTodayDateTime();
+		if (!actualDateTime.toLocalDate().isEqual(date)) {
+			return actualBookedTime;
+		}
 		BookedTimeCache bookedTimeCache = bookedTimeCacheRepository.findByStaffIdAndDate(staffId, date);
 		if (isNull(bookedTimeCache)) {
 			saveToDb(date, staffId, actualBookedTime, bookedTimeCache);
@@ -74,8 +80,13 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 		if (!isEmpty(actualBookedTime) && actualBookedTime.size() == 1 && actualBookedTime.get(0).getStarTime().plusMinutes(5).equals(LocalTime.of(22, 0))) {
 			return emptyList();
 		}
+
 		List<TimePeriod> previousBookedTime = bookedTimeCache.getSchedule();
 		if (!isEmpty(actualBookedTime) && !actualBookedTime.equals(previousBookedTime) && actualBookedTime.size() == previousBookedTime.size()) {
+			if (actualBookedTime.get(0).getStarTime().equals(START_OF_WORK) && actualDateTime.toLocalTime().isAfter(previousBookedTime.get(0).getStarTime())) {
+				return previousBookedTime;
+			}
+
 			List<TimePeriod> stabilizedBookedTime = new LinkedList<>();
 			for (int i = 0; i < actualBookedTime.size(); i++) {
 				TimePeriod actualItem = actualBookedTime.get(i);

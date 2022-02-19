@@ -54,6 +54,7 @@ public class BookedTimeMapper {
 		}
 	}
 
+	//todo move?
 	private boolean isStartOfWork(TimePeriod first) {
 		return START_OF_WORK.equals(first.getStarTime());
 	}

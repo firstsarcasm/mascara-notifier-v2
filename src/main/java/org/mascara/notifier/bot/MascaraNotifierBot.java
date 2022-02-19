@@ -45,7 +45,6 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 
 	//todo unit tests
 	//todo добавить на начальном экране выбор салона и сотрудника
-	//todo не обновлять расписание на день если оно становится пустым?
 	@Override
 	public void onUpdateReceived(Update update) {
 		var chatId = extractChatId(update);

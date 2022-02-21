@@ -83,7 +83,7 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 
 		List<TimePeriod> previousBookedTime = bookedTimeCache.getSchedule();
 		if (!isEmpty(actualBookedTime) && !actualBookedTime.equals(previousBookedTime) && actualBookedTime.size() == previousBookedTime.size()) {
-			if (actualBookedTime.get(0).getStarTime().equals(START_OF_WORK) && actualDateTime.toLocalTime().isAfter(previousBookedTime.get(0).getStarTime())) {
+			if (actualBookedTime.get(0).getStarTime().equals(START_OF_WORK) && (actualDateTime.toLocalTime().isAfter(previousBookedTime.get(0).getStarTime()) || actualDateTime.toLocalTime().isAfter(previousBookedTime.get(0).getStarTime().minusMinutes(16)))) {
 				return previousBookedTime;
 			}
 

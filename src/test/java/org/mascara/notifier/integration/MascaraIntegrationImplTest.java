@@ -58,7 +58,7 @@ class MascaraIntegrationImplTest {
 						))
 				.build());
 		try (MockedStatic<TimeUtils> utilities = Mockito.mockStatic(TimeUtils.class)) {
-			LocalDateTime actualDateTime = LocalDateTime.parse("2022-12-30T16:10:00.11");
+			LocalDateTime actualDateTime = LocalDateTime.parse("2022-12-30T15:45:00.11");
 			utilities.when(TimeUtils::getTodayDateTime).thenReturn(actualDateTime);
 			List<FreeBookingTime> build = List.of(
 					FreeBookingTime.builder().time(LocalTime.of(18, 0)).seanceLength(14400L).build()

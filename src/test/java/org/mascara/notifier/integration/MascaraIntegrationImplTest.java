@@ -1,6 +1,7 @@
 package org.mascara.notifier.integration;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mascara.notifier.entity.BookedTimeCache;
@@ -22,21 +23,28 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-//todo refactoring pls
+@Slf4j
 @SpringJUnitConfig(classes = {
 		MascaraIntegrationImpl.class,
 		AvailableBookingTimeMapper.class,
 		BookedTimeMapper.class
 })
 class MascaraIntegrationImplTest {
+
+	private static final LocalTime EIGHTEEN = LocalTime.of(18, 0);
+	private static final LocalTime SIXTEEN = LocalTime.of(16, 0);
+	private static final LocalTime FIFTEEN_AFTER_TEN = LocalTime.of(10, 15);
+	private static final LocalTime THIRTY_AFTER_TEN = LocalTime.of(10, 30);
+	private static final LocalDateTime ACTUAL_DATE_TIME_FOR_TEST = LocalDateTime.parse("2022-12-30T15:45:00.11");
 
 	@Autowired
 	private MascaraIntegration integration;
@@ -51,46 +59,49 @@ class MascaraIntegrationImplTest {
 	@SneakyThrows
 	@DisplayName("Should return previous time when current time crossed the border of current session")
 	void test1() {
-		TimePeriod previousTimePeriod = new TimePeriod(LocalTime.of(16, 0), LocalTime.of(18, 0));
-		when(bookedTimeCacheRepository.findByStaffIdAndDate(anyInt(), any(LocalDate.class))).thenReturn(BookedTimeCache.builder()
-						.schedule(List.of(
-								previousTimePeriod
-						))
-				.build());
+		TimePeriod previousTimePeriod = new TimePeriod(SIXTEEN, EIGHTEEN);
+		BookedTimeCache bookedTimeCache = BookedTimeCache.builder()
+				.schedule(List.of(previousTimePeriod))
+				.build();
+		when(bookedTimeCacheRepository.findByStaffIdAndDate(anyInt(), any(LocalDate.class))).thenReturn(bookedTimeCache);
 		try (MockedStatic<TimeUtils> utilities = Mockito.mockStatic(TimeUtils.class)) {
-			LocalDateTime actualDateTime = LocalDateTime.parse("2022-12-30T15:45:00.11");
-			utilities.when(TimeUtils::getTodayDateTime).thenReturn(actualDateTime);
-			List<FreeBookingTime> build = List.of(
-					FreeBookingTime.builder().time(LocalTime.of(18, 0)).seanceLength(14400L).build()
-			);
-			FreeBookingTime[] objects1 = build.toArray(new FreeBookingTime[build.size()]);
+			utilities.when(TimeUtils::getTodayDateTime).thenReturn(ACTUAL_DATE_TIME_FOR_TEST);
+			List<FreeBookingTime> bookingTimes = Collections.singletonList(makeFreeBookingTimeArray(EIGHTEEN, 14400L));
+			FreeBookingTime[] objects1 = makeFreeBookingTimeArray(bookingTimes);
 			when(customRestTemplate.exchange(any(RequestEntity.class), eq(FreeBookingTime[].class)))
 					.thenReturn(ResponseEntity.ok(objects1));
-
 
 			LocalDate now = LocalDate.parse("2022-12-30");
 			List<TimePeriod> bookedTime = integration.getBookedTime(123, now);
 
 			assertEquals(List.of(previousTimePeriod), bookedTime);
 		}
-
 	}
 
 	@Test
 	void getBookedTime() {
-
 		List<FreeBookingTime> build = List.of(
-				FreeBookingTime.builder().time(LocalTime.of(10, 15)).seanceLength(7200L).build(),
-				FreeBookingTime.builder().time(LocalTime.of(10, 30)).seanceLength(5400L).build()
+				makeFreeBookingTimeArray(FIFTEEN_AFTER_TEN, 7200L),
+				makeFreeBookingTimeArray(THIRTY_AFTER_TEN, 5400L)
 		);
 		FreeBookingTime[] objects1 = build.toArray(new FreeBookingTime[build.size()]);
 		when(customRestTemplate.exchange(any(RequestEntity.class), eq(FreeBookingTime[].class)))
 				.thenReturn(ResponseEntity.ok(objects1));
 
-
 		LocalDate now = TimeUtils.getToday();
 		List<TimePeriod> bookedTime = integration.getBookedTime(123, now);
 
-		System.out.println(bookedTime);
+		log.info(bookedTime.toString());
+	}
+
+	private FreeBookingTime makeFreeBookingTimeArray(LocalTime time, long seanceLength) {
+		return FreeBookingTime.builder()
+				.time(time)
+				.seanceLength(seanceLength)
+				.build();
+	}
+
+	private FreeBookingTime[] makeFreeBookingTimeArray(List<FreeBookingTime> bookingTimes) {
+		return bookingTimes.toArray(new FreeBookingTime[0]);
 	}
 }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Position{
+public class Position {
 	private Integer id;
 	private String title;
 }

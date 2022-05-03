@@ -23,8 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static java.time.LocalDate.now;
-
 @SpringJUnitConfig(classes = {
 		BookedTimeMapper.class,
 		AvailableBookingTimeMapper.class,

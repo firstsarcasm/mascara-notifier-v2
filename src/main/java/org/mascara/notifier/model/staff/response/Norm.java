@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Norm{
+public class Norm {
 	private String path;
 	private String width;
 	private Integer id;

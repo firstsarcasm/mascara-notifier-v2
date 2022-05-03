@@ -17,10 +17,10 @@ public class FreeBookingTime {
 	@JsonProperty("seance_length")
 	private Long seanceLength;
 
-	private ZonedDateTime datetime;
-
 	@JsonProperty("sum_length")
 	private Long sumLength;
+
+	private ZonedDateTime datetime;
 
 	private LocalTime time;
 }

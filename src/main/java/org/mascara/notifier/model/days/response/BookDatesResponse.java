@@ -14,8 +14,7 @@ import java.util.List;
 public class BookDatesResponse {
 	@JsonProperty("working_dates")
 	private List<LocalDate> bookingDates;
-	//	private WorkingDays workingDays;
-//	private BookingDays bookingDays;
+
 	@JsonProperty("booking_dates")
 	private List<LocalDate> workingDates;
 }

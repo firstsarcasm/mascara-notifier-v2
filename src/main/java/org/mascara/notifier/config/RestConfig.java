@@ -41,5 +41,4 @@ public class RestConfig {
 		return restTemplate;
 	}
 
-
 }

@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-//todo constants
 @Service
 @RequiredArgsConstructor
 public class MascaraServiceImpl implements MascaraService {
@@ -83,6 +82,7 @@ public class MascaraServiceImpl implements MascaraService {
 		LocalDate targetDay = relativeDay.getDay().get();
 		return getScheduleFormatted(staffId, prefix, targetDay);
 	}
+
 	private String makePrefix(RelativeDay relativeDay) {
 		return relativeDay.getDescription() + DAY_DESCRIPTION_DELIMITER;
 	}

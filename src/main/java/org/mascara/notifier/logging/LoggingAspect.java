@@ -28,7 +28,6 @@ public class LoggingAspect {
 
 	@After("executeLogging()")
 	public void logAfterMethodCall(JoinPoint pjp) {
-
 		String className = pjp.getTarget().getClass().getSimpleName();
 		Signature signature = pjp.getSignature();
 		log.info("Exit method '{}.{}' ", className, signature.getName());

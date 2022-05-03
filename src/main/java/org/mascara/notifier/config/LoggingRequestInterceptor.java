@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @Component
 public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
 
+	public static final String NEW_LINE = "\n";
+
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 		logRequest(request, body);
@@ -34,7 +36,12 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
 				Headers     : {}",
 				Request body: {}",
 				===========================request end===============================================
-				""", request.getURI(), request.getMethod(), request.getHeaders(), new String(body, StandardCharsets.UTF_8));
+				""",
+				request.getURI(),
+				request.getMethod(),
+				request.getHeaders(),
+				new String(body, StandardCharsets.UTF_8)
+		);
 	}
 
 	private void logResponse(ClientHttpResponse response) throws IOException {
@@ -47,13 +54,18 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
 				Headers      : {}",
 				Response body: {}",
 				=======================response end=================================================
-				""", response.getStatusCode(), response.getStatusText(), response.getHeaders(), responseBody);
+				""",
+				response.getStatusCode(),
+				response.getStatusText(),
+				response.getHeaders(),
+				responseBody
+		);
 	}
 
 	private String getResponseBody(ClientHttpResponse response) throws IOException {
 		InputStreamReader in = new InputStreamReader(response.getBody(), StandardCharsets.UTF_8);
 		return new BufferedReader(in).lines()
-				.collect(Collectors.joining("\n"));
+				.collect(Collectors.joining(NEW_LINE));
 	}
 
 }

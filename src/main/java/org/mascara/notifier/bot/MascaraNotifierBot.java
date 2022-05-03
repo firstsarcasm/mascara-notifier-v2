@@ -33,6 +33,9 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 	@Value("${telegram.bot.token}")
 	private String botToken;
 
+	@Value("${mascara.employee-name}")
+	private String employeeName;
+
 	@Override
 	public String getBotUsername() {
 		return botName;
@@ -43,15 +46,12 @@ public class MascaraNotifierBot extends AbstractMascaraNotifierBot {
 		return botToken;
 	}
 
-	//todo unit tests
-	//todo добавить на начальном экране выбор салона и сотрудника
 	@Override
 	public void onUpdateReceived(Update update) {
 		var chatId = extractChatId(update);
 		sendMainKeyboard(chatId);
 
-		Integer staffId = mascaraService.getStaffId("Даша С");
-//		Integer staffId = mascaraService.getStaffId("Ума");
+		Integer staffId = mascaraService.getStaffId(employeeName);
 
 		if (hasTextMessage(update)) {
 			String messageText = update.getMessage().getText();

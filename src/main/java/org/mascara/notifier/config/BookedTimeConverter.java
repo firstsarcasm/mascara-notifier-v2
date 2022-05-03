@@ -18,6 +18,8 @@ import java.util.List;
 @Component
 public class BookedTimeConverter implements AttributeConverter<List<TimePeriod>, String> {
 
+	private static final TypeReference<List<TimePeriod>> TYPE_REF = new TypeReference<>() {};
+
 	private static ObjectMapper objectMapper;
 
 	@Autowired
@@ -38,8 +40,7 @@ public class BookedTimeConverter implements AttributeConverter<List<TimePeriod>,
 	@Override
 	public List<TimePeriod> convertToEntityAttribute(String str) {
 		try {
-			return objectMapper.readValue(str, new TypeReference<>() {
-			});
+			return objectMapper.readValue(str, TYPE_REF);
 		} catch (final IOException e) {
 			log.error("JSON reading error", e);
 			return null;

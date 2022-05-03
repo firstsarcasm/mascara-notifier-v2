@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageGroup{
+public class ImageGroup {
 	private Images images;
 	private Integer id;
 	private String entityId;

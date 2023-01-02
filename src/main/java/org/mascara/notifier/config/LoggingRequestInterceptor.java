@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Component
 public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
 
-	public static final String NEW_LINE = "\n";
+	private static final String NEW_LINE = "\n";
 
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {

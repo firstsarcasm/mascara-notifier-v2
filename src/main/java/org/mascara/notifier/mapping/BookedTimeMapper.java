@@ -23,11 +23,10 @@ public class BookedTimeMapper {
 			return bookedPeriods;
 		}
 
-		//todo we need some refactoring here
-		LocalTime starTime = possibleServiceTimePeriods.get(0).getStarTime();
+		LocalTime starTime = getEarlierStartTime(possibleServiceTimePeriods);
 		LocalDateTime today = TimeUtils.getTodayDateTime();
-		LocalTime localTime = today.toLocalTime().plusMinutes(15);
-		if (!starTime.equals(START_OF_WORK) && !(date.isEqual(today.toLocalDate()) && (localTime.isAfter(starTime) || localTime.equals(starTime)))) {
+		LocalTime fifteenMinutesAfterNow = get15MinutesAfterNow(today);
+		if (isStartOfWorkNeeded(date, starTime, today, fifteenMinutesAfterNow)) {
 			bookedPeriods.add(new TimePeriod(START_OF_WORK, starTime));
 		}
 
@@ -54,13 +53,27 @@ public class BookedTimeMapper {
 		}
 	}
 
-	//todo move?
-	private boolean isStartOfWork(TimePeriod first) {
-		return START_OF_WORK.equals(first.getStarTime());
+	private static LocalTime getEarlierStartTime(List<TimePeriod> possibleServiceTimePeriods) {
+		return possibleServiceTimePeriods.get(0).getStarTime();
 	}
 
-	private boolean isEndOfWork(TimePeriod first) {
-		return END_OF_WORK.equals(first.getEndTime());
+	private static boolean isToday(LocalDate date, LocalDateTime today) {
+		return date.isEqual(today.toLocalDate());
 	}
 
+	private static boolean isNotStartOfWork(LocalTime starTime) {
+		return !starTime.equals(START_OF_WORK);
+	}
+
+	private static LocalTime get15MinutesAfterNow(LocalDateTime today) {
+		return today.toLocalTime().plusMinutes(15);
+	}
+
+	private static boolean isStartOfWorkNeeded(LocalDate date, LocalTime starTime, LocalDateTime today, LocalTime fifteenMinutesAfterNow) {
+		return
+				isNotStartOfWork(starTime)
+						&& !(isToday(date, today)
+						&& (fifteenMinutesAfterNow.isAfter(starTime)
+						|| fifteenMinutesAfterNow.equals(starTime)));
+	}
 }

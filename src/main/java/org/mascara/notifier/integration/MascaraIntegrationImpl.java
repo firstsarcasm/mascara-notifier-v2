@@ -11,6 +11,7 @@ import org.mascara.notifier.model.staff.response.Employee;
 import org.mascara.notifier.model.times.response.FreeBookingTime;
 import org.mascara.notifier.repository.BookedTimeCacheRepository;
 import org.mascara.notifier.util.TimeUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
@@ -41,17 +42,16 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class MascaraIntegrationImpl implements MascaraIntegration {
 
 	private static final String STAFF_URL_TEMPLATE = "https://n652960.yclients.com/api/v1/book_staff/%s";
-	private static final String TIMETABLE_URL_TEMPLATE = "https://n652960.yclients.com/api/v1/book_staff_seances/%s/%s";
 	private static final String BOOK_DATES_URL_TEMPLATE = "https://n652960.yclients.com/api/v1/book_dates/%s?staff_id=%s&date=%s";
 	private static final String BOOK_TIMES_URL_TEMPLATE = "https://n652960.yclients.com/api/v1/book_times/%s/%s/%s";
-
-	//todo move to config
-	private static final String MASCARA_TOKEN = "Bearer yusw3yeu6hrr4r9j3gw6";
 
 	private final RestTemplate customRestTemplate;
 	private final AvailableBookingTimeMapper availableBookingTimeMapper;
 	private final BookedTimeMapper bookedTimeMapper;
 	private final BookedTimeCacheRepository bookedTimeCacheRepository;
+
+	@Value("${mascara.token}")
+	private String mascaraToken;
 
 	@Override
 	@LogEntryAndExit
@@ -66,7 +66,6 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 		return returnFromCacheIfChangesInsignificant(actualBookedTime, staffId, date);
 	}
 
-	//todo we need some refactoring here
 	private List<TimePeriod> returnFromCacheIfChangesInsignificant(List<TimePeriod> actualBookedTime, Integer staffId, LocalDate date) {
 		LocalDateTime actualDateTime = TimeUtils.getTodayDateTime();
 		if (!actualDateTime.toLocalDate().isEqual(date)) {
@@ -98,7 +97,6 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 				if (actualItem.getStarTime().plusMinutes(5).equals(previousItem.getStarTime())
 						|| actualItem.getStarTime().minusMinutes(5).equals(previousItem.getStarTime())) {
 					stabilizedBookedTime.add(previousItem);
-					continue;
 				} else {
 					saveToDb(date, staffId, actualBookedTime, bookedTimeCache);
 					return actualBookedTime;
@@ -160,7 +158,7 @@ public class MascaraIntegrationImpl implements MascaraIntegration {
 	private RequestEntity<Void> makeGetRequest(URI uri) {
 		return RequestEntity.get(uri)
 				.accept(MediaType.APPLICATION_JSON)
-				.header(AUTHORIZATION, MASCARA_TOKEN)
+				.header(AUTHORIZATION, mascaraToken)
 				.build();
 	}
 
